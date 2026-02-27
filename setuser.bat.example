@@ -1,0 +1,3 @@
+@echo off
+setx SENSORPUSH_USER login@email.address
+setx SENSORPUSH_PASSWORD my_password
