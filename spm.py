@@ -89,8 +89,10 @@ class Sensor():
     def get_temp(self):
         self.temp_label = QLabel(str(round(self.cal_temp, 1))+"°F")
         if self.a_t:
-            if self.cal_temp >= self.a_tmax or self.cal_temp <= self.a_tmin:
+            if self.cal_temp >= self.a_tmax:
                 self.temp_label.setStyleSheet("color: red;")
+            elif  self.cal_temp <= self.a_tmin:
+                self.temp_label.setStyleSheet("color: darkblue;")
             else:
                 self.temp_label.setStyleSheet("color: darkgreen;")
         return self.temp_label
@@ -125,8 +127,10 @@ class Sensor():
         self.cal_humid = self.humid + self.h_calibration
         self.temp_label.setText(str(round(self.cal_temp,1)))
         if self.a_t:
-            if self.cal_temp >= self.a_tmax or self.cal_temp <= self.a_tmin:
+            if self.cal_temp >= self.a_tmax:
                 self.temp_label.setStyleSheet("color: red;")
+            elif  self.cal_temp <= self.a_tmin:
+                self.temp_label.setStyleSheet("color: darkblue;")
             else:
                 self.temp_label.setStyleSheet("color: darkgreen;")
         self.temp_label.repaint()
@@ -245,5 +249,5 @@ if __name__ == '__main__':
 
 """
 v 0.1       :   20260226        : Initial version.
-v 0.1a      :   20260227        : Fixed display rounding issue
+v 0.1a      :   20260227        : Fixed display rounding issue. Also updated temperature so that over range is red and under range is blue.
 """
