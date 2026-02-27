@@ -76,7 +76,7 @@ class Sensor():
         return self.id
 
     def get_sensor(self):
-        return QLabel(self.name+"\n"+str(round(self.cal_temp, 1))+"°F, "+str(round(self.cal_humid, 1))+"%\n"+str(self.volts)+"v")
+        return QLabel(self.name+"\n"+str(round(self.cal_temp, 1))+"°F, "+str(round(self.cal_humid, 1))+"%\n"+str(round(self.volts, 2)+"v"))
     
     def get_sensor_name(self):
         font = QFont()
@@ -104,7 +104,7 @@ class Sensor():
         msg = ""
         if self.volts <= batmin:
             msg = " (Replace Battery!)"
-        self.bat_label = QLabel(str(round(self.volts,1))+"v"+msg)
+        self.bat_label = QLabel(str(round(self.volts, 2))+"v"+msg)
         if self.volts > batmin:
             self.bat_label.setStyleSheet("color: darkgreen;")
         else:
@@ -135,7 +135,7 @@ class Sensor():
         msg = ""
         if self.volts <= batmin:
             msg = " (Replace Battery!)"
-        self.bat_label.setText(str(round(self.volts))+"v"+msg)
+        self.bat_label.setText(str(round(self.volts, 2))+"v"+msg)
         if self.volts > batmin:
             self.bat_label.setStyleSheet("color: darkgreen;")
         else:
