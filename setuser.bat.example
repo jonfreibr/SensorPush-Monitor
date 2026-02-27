@@ -1,3 +1,4 @@
 @echo off
+:: Using "setx" because it sets a permanent variable
 setx SENSORPUSH_USER login@email.address
 setx SENSORPUSH_PASSWORD my_password
