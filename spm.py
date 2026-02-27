@@ -45,7 +45,7 @@ from PySide6.QtWidgets import (
     QDialogButtonBox,
 )
 
-progver = 0.1
+progver = "0.1a"
 batmin = 2.3 # volts
 sensors = []
 
@@ -245,4 +245,5 @@ if __name__ == '__main__':
 
 """
 v 0.1       :   20260226        : Initial version.
+v 0.1a      :   20260227        : Fixed display rounding issue
 """
