@@ -45,7 +45,7 @@ from PySide6.QtWidgets import (
     QDialogButtonBox,
 )
 
-progver = "0.1a"
+progver = "0.1b"
 batmin = 2.3 # volts
 sensors = []
 
@@ -217,7 +217,7 @@ class MainWindow(QMainWindow):
 
         timer = QTimer(self)
         timer.timeout.connect(self.do_update)
-        timer.start(300000) # milliseconds
+        timer.start(60000) # milliseconds
 
     def do_update(self):
         s = self.sensorpush.sensors
@@ -250,4 +250,5 @@ if __name__ == '__main__':
 """
 v 0.1       :   20260226        : Initial version.
 v 0.1a      :   20260227        : Fixed display rounding issue. Also updated temperature so that over range is red and under range is blue.
+v 0.1b      :   20260302        : Shortened refresh interval to 1 minute.
 """
