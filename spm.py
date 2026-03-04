@@ -45,7 +45,7 @@ from PySide6.QtWidgets import (
     QDialogButtonBox,
 )
 
-progver = "0.1b"
+progver = "0.1c"
 batmin = 2.3 # volts
 sensors = []
 
@@ -150,14 +150,6 @@ class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
 
-        self.setWindowTitle(f'SensorPush Monitor v{progver}')
-        self.settings = QSettings("Blue Ridge Medical Center", "SensorPush Monitor")
-        self.resize(self.settings.value('MainWindowSize', QSize(450, 50)))
-        self.move(self.settings.value('MainWindowPos', QPoint(50, 50)))
-        self.setStyleSheet(f'background-color: {brmc_medium_blue}')
-        self.container = QWidget()
-        layout = QGridLayout()
-
         user = os.getenv('SENSORPUSH_USER', None)
         password = os.getenv('SENSORPUSH_PASSWORD', None)
 
@@ -166,6 +158,14 @@ class MainWindow(QMainWindow):
                 'ERROR! Must define env variables SENSORPUSH_USER and SENSORPUSH_PASSWORD'
             )
             raise SystemExit
+
+        self.setWindowTitle(f'SensorPush Monitor v{progver}')
+        self.settings = QSettings("Blue Ridge Medical Center", f"SensorPush Monitor, {user}")
+        self.resize(self.settings.value('MainWindowSize', QSize(450, 50)))
+        self.move(self.settings.value('MainWindowPos', QPoint(50, 50)))
+        self.setStyleSheet(f'background-color: {brmc_medium_blue}')
+        self.container = QWidget()
+        layout = QGridLayout()
     
         self.sensorpush = PySensorPush(user, password)
 
@@ -251,4 +251,5 @@ if __name__ == '__main__':
 v 0.1       :   20260226        : Initial version.
 v 0.1a      :   20260227        : Fixed display rounding issue. Also updated temperature so that over range is red and under range is blue.
 v 0.1b      :   20260302        : Shortened refresh interval to 1 minute.
+v 0.1c      :   20260303        : Saves settings based on SENSORPUSH_USER variable
 """
