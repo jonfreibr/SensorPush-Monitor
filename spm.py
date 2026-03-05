@@ -87,7 +87,7 @@ class Sensor():
         return self.name_label
     
     def get_temp(self):
-        self.temp_label = QLabel(str(round(self.cal_temp, 1))+"°F")
+        self.temp_label = QLabel()
         if self.a_t:
             if self.cal_temp >= self.a_tmax:
                 self.temp_label.setStyleSheet("color: red;")
@@ -95,6 +95,10 @@ class Sensor():
                 self.temp_label.setStyleSheet("color: darkblue;")
             else:
                 self.temp_label.setStyleSheet("color: darkgreen;")
+        else:
+            self.temp_label.setStyleSheet("color: black;")
+        self.temp_label.setText(str(round(self.cal_temp,1))+"°F")
+        # print(f"{self.name} - Min: {self.a_tmin}, Actual: {self.cal_temp}, Max: {self.a_tmax}")
         return self.temp_label
     
     def get_humid(self):
@@ -125,7 +129,6 @@ class Sensor():
         self.a_h = a_h
         self.cal_temp = self.temp + self.t_calibration
         self.cal_humid = self.humid + self.h_calibration
-        self.temp_label.setText(str(round(self.cal_temp,1)))
         if self.a_t:
             if self.cal_temp >= self.a_tmax:
                 self.temp_label.setStyleSheet("color: red;")
@@ -133,8 +136,12 @@ class Sensor():
                 self.temp_label.setStyleSheet("color: darkblue;")
             else:
                 self.temp_label.setStyleSheet("color: darkgreen;")
+        else:
+            self.temp_label.setStyleSheet("color: black;")
+        self.temp_label.setText(str(round(self.cal_temp,1))+"°F")
         self.temp_label.repaint()
-        self.humd_label.setText(str(round(self.cal_humid,1)))
+        # print(f"{self.name} - Min: {self.a_tmin}, Actual: {self.cal_temp}, Max: {self.a_tmax}")
+        self.humd_label.setText(str(round(self.cal_humid,1))+"%")
         self.temp_label.repaint()
         msg = ""
         if self.volts <= batmin:
