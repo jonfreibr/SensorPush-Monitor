@@ -4,3 +4,4 @@ Reads the environment variables SENSORPUSH_USER and SENSORPUSH_PASSWORD and uses
 
 If a temperature range is set, there needs to be both a high and a low limit. "Alert Me" must also be selected.
 
+pysensorpush module license: Apache 2.0 License (http://www.apache.org/licenses/LICENSE-2.0)
