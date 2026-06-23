@@ -67,6 +67,7 @@ if exist "%~dp0\requirements.txt" (
 
 echo Copying files
 copy /y "%~dp0\spm.py" %PROJECT_DIR%
+copy /y "%~dp0\sensorpush-icon.ico" %PROJECT_DIR%
 echo Finished copying files
 
 echo Deactivating virtual environment...
@@ -76,7 +77,7 @@ echo Creating desktop shortcut...
 set "SHORTCUT_PATH=%USERPROFILE%\Desktop\SensorPush Monitor.lnk"
 set "TARGET_PATH=%PROJECT_DIR%\spm.py"
 set "WORKING_DIR=%PROJECT_DIR%"
-set "ICON_PATH=%~dp0\icon.ico"
+set "ICON_PATH=%PROJECT_DIR%\sensorpush-icon.ico"
 
 powershell -NoLogo -NoProfile -ExecutionPolicy Bypass -Command ^
   "$s=(New-Object -COM WScript.Shell).CreateShortcut('%SHORTCUT_PATH%');" ^
