@@ -11,6 +11,7 @@ Purpose :   To provide a display of current sensor reading without using the web
 import os
 import sys
 from pysensorpush import PySensorPush
+from datetime import datetime, timezone
 
 from PySide6.QtGui import (
     QFont,
@@ -45,7 +46,7 @@ from PySide6.QtWidgets import (
     QDialogButtonBox,
 )
 
-progver = "0.1c"
+progver = "0.1d"
 batmin = 2.3 # volts
 sensors = []
 
@@ -56,8 +57,9 @@ brmc_rust = '#ce7067'
 brmc_warm_grey = '#9a8b7d'
 
 class Sensor():
-    def __init__(self, id, name, t_calibration, h_calibration, volts, temp, humid, a_t, a_tmax, a_tmin, a_h):
+    def __init__(self, id, name, t_calibration, h_calibration, volts, temp, humid, a_t, a_tmax, a_tmin, a_h, observed):
         
+        self.now = datetime.now(timezone.utc)
         self.id = id
         self.name = name
         self.t_calibration = t_calibration
@@ -71,6 +73,8 @@ class Sensor():
         self.a_h = a_h
         self.cal_temp = self.temp + self.t_calibration
         self.cal_humid = self.humid + self.h_calibration
+        self.observed = datetime.fromisoformat(observed)
+        # print(f"{self.observed}, {(self.now-self.observed).total_seconds()}")
 
     def get_sensor_id(self):
         return self.id
@@ -82,28 +86,31 @@ class Sensor():
         font = QFont()
         font.setItalic(True)
         self.name_label = QLabel(self.name)
-        self.name_label.setStyleSheet("color: black;")
+        self.name_label.setStyleSheet(f"background-color: {brmc_medium_blue}; color: black;")
         self.name_label.setFont(font)
         return self.name_label
     
     def get_temp(self):
+        self.now = datetime.now(timezone.utc)
         self.temp_label = QLabel()
         if self.a_t:
             if self.cal_temp >= self.a_tmax:
-                self.temp_label.setStyleSheet("color: red;")
+                self.temp_label.setStyleSheet(f"background-color: {brmc_medium_blue}; color: red;")
             elif  self.cal_temp <= self.a_tmin:
-                self.temp_label.setStyleSheet("color: darkblue;")
+                self.temp_label.setStyleSheet(f"background-color: {brmc_medium_blue}; color: darkblue;")
             else:
-                self.temp_label.setStyleSheet("color: darkgreen;")
+                self.temp_label.setStyleSheet(f"background-color: {brmc_medium_blue}; color: darkgreen;")
         else:
-            self.temp_label.setStyleSheet("color: black;")
+            self.temp_label.setStyleSheet(f"background-color: {brmc_medium_blue}; color: black;")
+        if (self.now-self.observed).total_seconds() > 900:
+            self.temp_label.setStyleSheet("background-color: olive; color: white;")
         self.temp_label.setText(str(round(self.cal_temp,1))+"°F")
         # print(f"{self.name} - Min: {self.a_tmin}, Actual: {self.cal_temp}, Max: {self.a_tmax}")
         return self.temp_label
     
     def get_humid(self):
         self.humd_label = QLabel(str(round(self.cal_humid, 1))+"%")
-        self.humd_label.setStyleSheet("color: black;")
+        self.humd_label.setStyleSheet(f"background-color: {brmc_medium_blue}; color: black;")
         return self.humd_label
     
     def get_bat(self):
@@ -112,12 +119,13 @@ class Sensor():
             msg = " (Replace Battery!)"
         self.bat_label = QLabel(str(round(self.volts, 2))+"v"+msg)
         if self.volts > batmin:
-            self.bat_label.setStyleSheet("color: darkgreen;")
+            self.bat_label.setStyleSheet(f"background-color: {brmc_medium_blue}; color: darkgreen;")
         else:
-            self.bat_label.setStyleSheet("color: red;")
+            self.bat_label.setStyleSheet(f"background-color: {brmc_medium_blue}; color: red;")
         return self.bat_label
     
-    def sensor_update(self, t_calibration, h_calibration, volts, temp, humid, a_t, a_tmax, a_tmin, a_h):
+    def sensor_update(self, t_calibration, h_calibration, volts, temp, humid, a_t, a_tmax, a_tmin, a_h, observed):
+        self.now = datetime.now(timezone.utc)
         self.t_calibration = t_calibration
         self.h_calibration = h_calibration
         self.volts = volts
@@ -129,15 +137,18 @@ class Sensor():
         self.a_h = a_h
         self.cal_temp = self.temp + self.t_calibration
         self.cal_humid = self.humid + self.h_calibration
+        self.observed = datetime.fromisoformat(observed)
         if self.a_t:
             if self.cal_temp >= self.a_tmax:
-                self.temp_label.setStyleSheet("color: red;")
+                self.temp_label.setStyleSheet(f"background-color: {brmc_medium_blue}; color: red;")
             elif  self.cal_temp <= self.a_tmin:
-                self.temp_label.setStyleSheet("color: darkblue;")
+                self.temp_label.setStyleSheet(f"background-color: {brmc_medium_blue}; color: darkblue;")
             else:
-                self.temp_label.setStyleSheet("color: darkgreen;")
+                self.temp_label.setStyleSheet(f"background-color: {brmc_medium_blue}; color: darkgreen;")
         else:
-            self.temp_label.setStyleSheet("color: black;")
+            self.temp_label.setStyleSheet(f"background-color: {brmc_medium_blue}; color: black;")
+        if (self.now-self.observed).total_seconds() > 900:
+            self.temp_label.setStyleSheet("background-color: olive; color: white;")
         self.temp_label.setText(str(round(self.cal_temp,1))+"°F")
         self.temp_label.repaint()
         # print(f"{self.name} - Min: {self.a_tmin}, Actual: {self.cal_temp}, Max: {self.a_tmax}")
@@ -148,9 +159,9 @@ class Sensor():
             msg = " (Replace Battery!)"
         self.bat_label.setText(str(round(self.volts, 2))+"v"+msg)
         if self.volts > batmin:
-            self.bat_label.setStyleSheet("color: darkgreen;")
+            self.bat_label.setStyleSheet(f"background-color: {brmc_medium_blue}; color: darkgreen;")
         else:
-            self.bat_label.setStyleSheet("color: red;")
+            self.bat_label.setStyleSheet(f"background-color: {brmc_medium_blue}; color: red;")
         self.bat_label.repaint()
 
 class MainWindow(QMainWindow):
@@ -192,8 +203,9 @@ class MainWindow(QMainWindow):
             a_h = s[i]["alerts"]["humidity"]["enabled"]
             temp = r["sensors"][id][0]["temperature"]
             humid = r["sensors"][id][0]["humidity"]
+            observed = r["sensors"][id][0]["observed"]
             
-            sensors.append(Sensor(id, name, t_calibration, h_calibration, volts, temp, humid, a_t, a_tmax, a_tmin, a_h))
+            sensors.append(Sensor(id, name, t_calibration, h_calibration, volts, temp, humid, a_t, a_tmax, a_tmin, a_h, observed))
 
         font = QFont()
         font.setBold(True)
@@ -240,7 +252,8 @@ class MainWindow(QMainWindow):
             a_h = s[id]["alerts"]["humidity"]["enabled"]
             temp = r["sensors"][id][0]["temperature"]
             humid = r["sensors"][id][0]["humidity"]
-            i.sensor_update(t_calibration, h_calibration, volts, temp, humid, a_t, a_tmax, a_tmin, a_h)
+            observed = r["sensors"][id][0]["observed"]
+            i.sensor_update(t_calibration, h_calibration, volts, temp, humid, a_t, a_tmax, a_tmin, a_h, observed)
 
     def closeEvent(self, a0):
         self.settings.setValue("MainWindowSize", self.size())
@@ -259,4 +272,5 @@ v 0.1       :   20260226        : Initial version.
 v 0.1a      :   20260227        : Fixed display rounding issue. Also updated temperature so that over range is red and under range is blue.
 v 0.1b      :   20260302        : Shortened refresh interval to 1 minute.
 v 0.1c      :   20260303        : Saves settings based on SENSORPUSH_USER variable
+v 0.1d      :   20260710        : "Stale" sensors (readings > 15 minutes old) will flag by turning the font color white and changing the background to olive.
 """
