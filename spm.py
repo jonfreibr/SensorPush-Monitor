@@ -46,7 +46,7 @@ from PySide6.QtWidgets import (
     QDialogButtonBox,
 )
 
-progver = "0.1d"
+progver = "0.1e"
 batmin = 2.3 # volts
 sensors = []
 
@@ -188,6 +188,9 @@ class MainWindow(QMainWindow):
         self.sensorpush = PySensorPush(user, password)
 
         s = self.sensorpush.sensors
+        if s == None:
+            QMessageBox.critical(None, "SensorPush Service Error!", "Unable to log in to the service or service unavailable.\nExiting")
+            sys.exit()
         r = self.sensorpush.samples(1)
         # print(s)
         for i in s:
@@ -240,6 +243,9 @@ class MainWindow(QMainWindow):
 
     def do_update(self):
         s = self.sensorpush.sensors
+        if s == None:
+            QMessageBox.critical(None, "SensorPush Service Error!", "Service unavailable.")
+            return
         r = self.sensorpush.samples(1)
         for i in sensors:
             id = i.get_sensor_id()
@@ -273,4 +279,7 @@ v 0.1a      :   20260227        : Fixed display rounding issue. Also updated tem
 v 0.1b      :   20260302        : Shortened refresh interval to 1 minute.
 v 0.1c      :   20260303        : Saves settings based on SENSORPUSH_USER variable
 v 0.1d      :   20260710        : "Stale" sensors (readings > 15 minutes old) will flag by turning the font color white and changing the background to olive.
+v 0.1e      :   20260716        : Added information pop-ups when service is unavailable.
+
+ToDo    :   Track stale when service is offline and sensors can't be retrieved.
 """
